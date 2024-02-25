@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Css links -->
+    <link rel="stylesheet" href="style.css">
+    <!-- fontawesome -->
+    <script src="https://kit.fontawesome.com/f80359c2af.js" crossorigin="anonymous"></script>
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Concert+One&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <nav>
+        <p title="home" onclick="showSection('home')" class="activeNavButton"><i class="fas fa-home"></i></p>
+        <p title="search" onclick="showSection('search'); searchText.value=''"><i class="fas fa-search"></i></p>
+        <p title="favorite" onclick="showSection('favorite')" id="favoriteNav"><i class="fas fa-star"></i></p>
+        <p title="analysis"><i class="fas fa-chart-bar"></i></p>
+        <p title="settings"><i class="fas fa-cog"></i></p>
+    </nav>
+    <main>
+        <div id="noteList"></div>
+        <!-- Home section -->
+        <section id="home">
+            <div>
+                <div class="noteTitleWrapper">
+                    <label class="placeholderLabel" for="noteTitle">Note Title</label>
+                    <input type="text" class="noteTitleDemo" id="noteTitle">
+                </div>
+                <div id="addImageTagWrapper">
+                    <button>Add Tag</button>
+                    <button>Add Image</button>
+                    <div>
+                        <button>Brouse</button>
+                        <input type="text" placeholder="Image link">
+                    </div>
+                </div>
+            </div>
+            <div class="noteContentWrapper">
+                <p class="placeholderLabel">Note Content</p>
+                <div id="textDocument" class="contentDemo" contenteditable="true"></div>
+            </div>
+            <button id="createNoteBtn" class="pointCursor">Create Note</button>
+        </section>
+        <!-- Search section -->
+        <section id="search">
+            <div id="searchWrapper">
+                <div>
+                    <h1 id="searchTitle">Search for contents or titles</h1>
+                    <div id="magnifier"></div>
+                </div>
+                <div>
+                    <label class="placeholderLabel" for="searchText">Search</label>
+                    <input type="text" id="searchText">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            <div id="tagWrapper">
+                <p>Fashion</p>
+                <p>Sports</p>
+                <p>Entertainment</p>
+                <p>Programming</p>
+                <p>Languages</p>
+                <p>Food</p>
+                <p>Smocking</p>
+                <p>TV-Shows</p>
+                <p>Fashion</p>
+                <p>Sports</p>
+                <p>Entertainment</p>
+                <p>Programming</p>
+                <p>Languages</p>
+                <p>Food</p>
+                <p>Smocking</p>
+                <p>TV-Shows</p>
+            </div>
+        </section>
+        <!-- Favorite section -->
+        <section id="favorite">
+            <div class="noteTitleWrapper">
+                <input type="text" class="noteTitleDemo" id="noteTitleDemo">
+            </div>
+            <div class="noteContentWrapper">
+                <div class="contentDemo" id="contentDemo"></div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

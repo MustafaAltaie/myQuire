@@ -1,0 +1,398 @@
+:root{
+    --iconTextSize: 30px;
+    --bigText: 22px;
+    --normalText: 16px;
+    --smallText: 10px;
+    --normalBlue: #05a;
+    --starColor: #ff9500;
+    --lightGrey: #ddd;
+    --darkGrey: #777;
+    --navColor: #1958c5;
+    --backColor: #fff;
+    --forColor: #000;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    scrollbar-width: none;
+    user-select: none;
+    outline: none;
+}
+body{
+    background: var(--lightGrey);
+    height: 100vh;
+    display: flex;
+}
+i, #noteTitleDemo, .ttlCntntWrapper, .noteLeftPart{
+    pointer-events: none;
+}
+.deleteNote{
+    pointer-events: all;
+}
+button, .note, #tagWrapper > p, nav > p{
+    cursor: pointer;
+}
+button, input[type='text']{
+    padding: 15px;
+    border-radius: 25px;
+    border: solid 1px var(--forColor);
+}
+button{
+    background-color: var(--navColor);
+    color: var(--backColor);
+    font-size: var(--normalText);
+}
+button:hover, nav > p:hover{
+    filter: brightness(130%);
+}
+input[type='text'], label{
+    background-color: var(--lightGrey);
+}
+input[type='text']{
+    border: solid 1px var(--darkGrey);
+}
+.placeholderLabel{
+    position: absolute;
+    top: -10px;
+    left: 40px;
+    background: var(--lightGrey);
+    color: var(--darkGrey);
+}
+nav{
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    background: var(--navColor);
+    border-right: solid 1px #bbb;
+    box-shadow: 5px 0 5px #00000077, 10px 0 10px #00000077;
+    right: 0;
+}
+nav > p{
+    color: var(--backColor);
+    background: var(--navColor);
+    text-decoration: none;
+    font-size: var(--bigText);
+    padding: 30px;
+}
+nav > p > i{
+    font-size: var(--iconTextSize);
+}
+.activeNavButton{
+    filter: brightness(130%);
+    pointer-events: none;
+}
+main{
+    display: flex;
+    width: 100%;
+}
+#noteList{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 10px 10px 0;
+    min-width: 35%;
+    width: 40%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+}
+.note{
+    position: relative;
+    width: 100%;
+    height: 120px;
+    min-height: 120px;
+    margin: 10px 0;
+    background: var(--backColor);
+    color: var(--forColor);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 15px 15px 0;
+    left: -70px;
+    border-top: 15px solid #f00;
+    transition: 0.2s;
+}
+.note:hover{
+    left: 0 !important;
+}
+.noteRemoved{
+    left: -550px !important;
+    height: 0;
+    min-height: 0;
+    pointer-events: none;
+    transition: left 0.5s, height 0.1s linear 0.5s, min-height 0.1s linear 0.5s, margin 0.1s linear 0.5s;
+}
+.note::before{
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 98%;
+    height: 40px;
+    background: #00000088;
+    filter: blur(5px);
+    bottom: 15px;
+    transform: translateY(30%) rotate(-5deg);
+}
+.note::after{
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 98%;
+    height: 40px;
+    background: #00000088;
+    filter: blur(5px);
+    bottom: 15px;
+    transform: translateY(30%) rotate(5deg);
+}
+.note i{
+    font-size: 25px;
+}
+.note p{
+    font-size: var(--smallText);
+    color: var(--forColor);
+    opacity: 0.7;
+}
+.note h1{
+    font-weight: normal;
+}
+.note .fa-star{
+    color: #0000003f;
+    border-radius: 50%;
+    padding: 3px 1px;
+}
+.note .favorited{
+    color: var(--starColor);
+}
+.noteLeftPart{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.note .fa-trash-alt{
+    padding: 20px;
+    margin-right: 15px;
+}
+.deleteNote:hover > .fa-trash-alt{
+    animation: trashMove ease-in-out 0.5s;
+}
+@keyframes trashMove{
+    0%{
+        transform: rotate(0deg);
+        padding: 20px;
+    }
+    25%{
+        transform: rotate(-30deg);
+        padding: 10px 20px 30px 20px;
+    }
+    75%{
+        transform: rotate(30deg);
+        padding: 10px 20px 30px 20px;
+    }
+    100%{
+        transform: rotate(0deg);
+        padding: 20px;
+    }
+}
+.noteLeftPart > div:last-child{
+    text-align: center;
+    border-right: solid 1px var(--darkGrey);
+    border-left: solid 1px var(--darkGrey);
+    padding: 15px;
+}
+.noteLeftPart > div:last-child > p{
+    white-space: nowrap;
+}
+.starWrapper{
+    padding: 10px;
+    margin: 0 20px 0 10px;
+}
+.starWrapper:hover > i{
+    animation: starMove 0.4s ease-in-out;
+}
+@keyframes starMove{
+    0%{
+        transform: rotate(0deg);
+    }
+    50%{
+        transform: rotate(72deg);
+    }
+    100%{
+        transform: rotate(0deg);
+    }
+}
+.note > div:nth-child(2) > p{
+    max-height: 34px;
+    margin-top: 5px;
+    overflow-y: scroll;
+}
+
+/* -------------- Sections -------------- */
+section{
+    width: 70%;
+    max-width: 70%;
+    padding: 50px 80px 50px 0;
+    transform: translateX(100%);
+    opacity: 0;
+    display: none;
+    transition: 0.5s;
+}
+
+.showenSection{
+    transform: translateX(0%);
+    opacity: 1;
+}
+.hiddenSection{
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+/* Home */
+#home > div:first-child{
+    display: flex;
+}
+.noteTitleWrapper, .noteContentWrapper{
+    position: relative;
+}
+.noteTitleWrapper{
+    width: 40%;
+}
+#addImageTagWrapper{
+    position: relative;
+    width: 60%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+#addImageTagWrapper > div{
+    position: absolute;
+    top: 100px
+}
+.noteContentWrapper{
+    height: 70%;
+    margin-top: 40px;
+}
+.noteTitleDemo, #createNoteBtn{
+    width: 100%;
+}
+.contentDemo{
+    border: solid 1px var(--darkGrey);
+    height: 100%;
+    padding: 50px;
+    text-align: left;
+    border-radius: 25px;
+}
+#createNoteBtn{
+    margin-top: 40px;
+    width: 40%;
+}
+.updateMode{
+    border: dashed 2px var(--darkGrey);
+}
+
+/* Search */
+/* Search upper div */
+#searchWrapper{
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#searchWrapper > div:first-child{
+    position: relative;
+    height: 50%;
+    width: 100%;
+}
+#searchWrapper > div:first-child > h1{
+    font-family: "Concert One", sans-serif;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--navColor);
+}
+#magnifier{
+    z-index: 100;
+    position: absolute;
+    left: 250px;
+    top: 10px;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: solid 5px var(--darkGrey);
+    transform: rotate(45deg);
+    cursor: move;
+    backdrop-filter: hue-rotate(90deg) brightness(110%);
+}
+#magnifier::after{
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 50px;
+    height: 5px;
+    transform: translate(101%, -50%);
+    background: var(--darkGrey);
+}
+#searchWrapper > div:last-child{
+    position: relative;
+    height: 30%;
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#searchWrapper > div:last-child > label{
+    top: unset;
+    transform: translateY(-130%);
+}
+#searchWrapper > div:last-child > input{
+    width: 100%;
+}
+#searchWrapper > div:last-child > i{
+    transform: translateX(-200%);
+    color: var(--darkGrey);
+}
+
+/* Search lower div */
+#tagWrapper{
+    height: 50%;
+    width: 80%;
+    margin: auto;
+    border: solid 35px var(--lightGrey);
+    padding: 5px;
+    box-shadow: 0 0 2px #000;
+    border-radius: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    overflow-y: scroll;
+}
+#tagWrapper > p{
+    padding: 15px;
+    border-radius: 30px;
+    background-color: var(--navColor);
+    color: #fff;
+    transition: 0.1s;
+}
+#tagWrapper > p:hover{
+    filter: brightness(130%);
+    transform: scale(1.1);
+}
+
+/* Favorite */
+#favorite > .noteContentWrapper{
+    height: 85%;
+    padding-left: 20px;
+}
+#favorite > .noteTitleWrapper{
+    width: 100%;
+    text-align: center;
+}
+#noteTitleDemo{
+    width: 50%;
+}
