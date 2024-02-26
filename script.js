@@ -7,6 +7,14 @@ const notes = document.getElementsByClassName('note');
 const nav = document.querySelector('nav');
 const navBtns = nav.getElementsByTagName('p');
 let currentNavBtn = 'home';
+let noteObject = {
+    id: '',
+    title: '',
+    content: '',
+    images: [],
+    tags: [],
+    createdDate: '',
+}
 
 //Nav buttons
 
@@ -198,6 +206,131 @@ document.addEventListener('mouseup', evt => {
         magnifier.style.transition = '0.3s';
     }
 });
+
+
+// Home section
+
+const addImageWrapper = document.getElementById('addImageWrapper');
+const addTagWrapper = document.getElementById('addTagWrapper');
+const addTagText = document.getElementById('addTagText');
+const insertedTagWrapper = document.getElementById('insertedTagWrapper');
+
+
+document.onmousedown = evt => {
+    if(evt.target.id == 'addImagesBtn' || evt.target.parentNode.id == 'addImageWrapper'
+    || evt.target.parentNode.id == 'noteImagesWrapper')
+    addImageWrapper.style.display = 'flex';
+    else addImageWrapper.style.display = 'none';
+
+    if(evt.target.id == 'addTagsBtn' || evt.target.parentNode.id == 'addTagWrapperSmall' ||
+    evt.target.id == 'insertedTagWrapper' || evt.target.parentNode.id == 'insertedTagWrapper'){
+        addTagWrapper.style.display = 'flex';
+        addTagText.focus();
+    }
+    else addTagWrapper.style.display = 'none';
+
+    if(evt.target.id == 'addTagBtn')
+    addTagF(addTagText.value);
+}
+
+// Add tags
+
+let noteTagList = [];
+
+const addTagF = (tag) => {
+    if(tag != '' && insertedTagWrapper.childElementCount < 5){
+        insertedTagWrapper.style.display = 'flex';
+        noteTagList.push(tag);
+        const tagP = document.createElement('button');
+        tagP.innerHTML = tag + '<i class="fas fa-backspace"></i>';
+        tagP.onclick = () => {
+            tagP.classList.add('newRemovedag');
+            setTimeout(() => {
+                tagP.remove();
+                if(insertedTagWrapper.childElementCount == 0)
+                insertedTagWrapper.style.display = 'none';
+            }, 200);
+            noteTagList = noteTagList.filter(tag => tag != tagP.innerHTML.split('<')[0]);
+        }
+        tagP.classList.add('newAddedTag');
+        setTimeout(() => {
+            tagP.classList.remove('newAddedTag');
+        });
+        insertedTagWrapper.appendChild(tagP);
+        addTagText.value = '';
+        addTagText.focus();
+    }
+}
+
+addTagText.addEventListener('keypress', e => {
+    if(e.key == 'Enter'){
+        addTagF(addTagText.value);
+    }
+});
+
+// Add image
+
+const imageFile = document.getElementById('imageFile');
+const addImageBtn = document.getElementById('addImageBtn');
+const addImageLinkText = document.getElementById('addImageLinkText');
+const noteImagesWrapper = document.getElementById('noteImagesWrapper');
+const fileTypes = 'JPEG, JPG, jpeg, jpg, BMP, bmp, PNG, png';
+let browsedImageList = [];
+
+addImageBtn.onclick = () => {
+    if(addImageBtn.innerHTML != 'Add'){
+        imageFile.value=''; 
+        imageFile.click(); // Browse image locally
+    } else {
+        addImageF(addImageLinkText.value); // Add image link
+    }
+}
+
+// Add image locally
+imageFile.onchange = (evt) => {
+    let file = evt.target.files[0];
+    if(fileTypes.includes(file.type.split('/')[1])){
+        let url = URL.createObjectURL(file);
+        addImageF(url);
+    } else {
+        alert('File type is not an image');
+    }
+}
+
+addImageLinkText.oninput = () => {
+    if(addImageLinkText.value == ''){
+        addImageBtn.innerHTML = `Browse <i class="fas fa-folder-open"></i>`;
+    } else {
+        addImageBtn.innerHTML = `Add`;
+    }
+}
+
+const addImageF = (img) => {
+    browsedImageList.push(img);
+    noteImagesWrapper.style.display = 'flex';
+    const wrapper = document.createElement('div');
+    wrapper.onclick = () => {
+        wrapper.classList.add('newRemovedImage');
+        setTimeout(() => {
+            wrapper.remove();
+            if(noteImagesWrapper.childElementCount == 0)
+            noteImagesWrapper.style.display = 'none';
+            browsedImageList = browsedImageList.filter(image => image != img);
+        }, 200);
+    };
+    wrapper.classList.add('newAddedImage');
+    setTimeout(() => {
+        wrapper.classList.remove('newAddedImage');
+    });
+    const image = document.createElement('img');
+    image.src = img;
+    image.alt = 'Image';
+    const del = document.createElement('h1');
+    del.textContent = 'X';
+    wrapper.appendChild(image);
+    wrapper.appendChild(del);
+    noteImagesWrapper.appendChild(wrapper);
+}
 
 
 // Search section

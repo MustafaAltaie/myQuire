@@ -3,9 +3,10 @@
     --bigText: 22px;
     --normalText: 16px;
     --smallText: 10px;
-    --normalBlue: #05a;
+    --darkBlue: #049;
     --starColor: #ff9500;
     --lightGrey: #ddd;
+    --normalGrey: #aaa;
     --darkGrey: #777;
     --navColor: #1958c5;
     --backColor: #fff;
@@ -34,7 +35,7 @@ i, #noteTitleDemo, .ttlCntntWrapper, .noteLeftPart{
 button, .note, #tagWrapper > p, nav > p{
     cursor: pointer;
 }
-button, input[type='text']{
+input[type='text']{
     padding: 15px;
     border-radius: 25px;
     border: solid 1px var(--forColor);
@@ -42,7 +43,10 @@ button, input[type='text']{
 button{
     background-color: var(--navColor);
     color: var(--backColor);
-    font-size: var(--normalText);
+    min-width: 100px;
+    padding: 15px;
+    border-radius: 25px;
+    border: none;
 }
 button:hover, nav > p:hover{
     filter: brightness(130%);
@@ -265,9 +269,107 @@ section{
     justify-content: flex-end;
     gap: 10px;
 }
-#addImageTagWrapper > div{
+#addImageWrapper, #addTagWrapper{
+    z-index: 10;
     position: absolute;
-    top: 100px
+    background-color: var(--lightGrey);
+    display: none;
+    gap: 10px;
+    width: 100%;
+}
+#addImageWrapper{
+    justify-content: flex-end;
+}
+#noteImagesWrapper{
+    position: absolute;
+    top: 58px;
+    right: 0;
+    max-height: 500px;
+    overflow-y: scroll;
+}
+#noteImagesWrapper > div{
+    position: relative;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    border: solid 1px #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: 0.2s;
+}
+.newAddedImage{
+    transform: translateY(-200%);
+    opacity: 0;
+}
+.newRemovedImage{
+    transform: translateY(200%);
+    opacity: 0;
+}
+#noteImagesWrapper > div:hover > h1{
+    display: block;
+}
+#noteImagesWrapper h1{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    pointer-events: none;
+    color: #fff;
+    font-weight: normal;
+}
+#noteImagesWrapper img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+#addImageLinkText, #addTagText{
+    width: 70%;
+}
+#addTagWrapper{
+    flex-direction: column;
+}
+#addTagWrapperSmall{
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+#addTagWrapperSmall > button{
+    width: 20%;
+}
+#addTagWrapperSmall > label{
+    left: 80px;
+}
+#insertedTagWrapper, #noteImagesWrapper{
+    width: 100%;
+    padding: 30px 15px;
+    border-radius: 15px;
+    display: none;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    background: var(--darkBlue);
+    border: solid 1px #fff;
+    box-shadow: 0 0 20px #000;
+}
+#insertedTagWrapper > button{
+    transition: 0.2s;
+}
+.newAddedTag{
+    transform: translateY(-100%);
+    opacity: 0;
+}
+.newRemovedag{
+    transform: translateY(100%);
+    opacity: 0;
+}
+#insertedTagWrapper i{
+    margin-left: 10px;
+    color: var(--starColor);
+    font-size: var(--normalText);
 }
 .noteContentWrapper{
     height: 70%;
@@ -286,6 +388,7 @@ section{
 #createNoteBtn{
     margin-top: 40px;
     width: 40%;
+    font-size: var(--normalText);
 }
 .updateMode{
     border: dashed 2px var(--darkGrey);
