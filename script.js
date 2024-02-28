@@ -6,16 +6,26 @@ const colorList = ['#ff35b2', '#007fd4', '#ee3333', '#7141c5', '#ff6122df', '#50
 const notes = document.getElementsByClassName('note');
 const nav = document.querySelector('nav');
 const navBtns = nav.getElementsByTagName('p');
+const imageFile = document.getElementById('imageFile');
+const addImageBtn = document.getElementById('addImageBtn');
+const addImageLinkText = document.getElementById('addImageLinkText');
+const noteImagesWrapper = document.getElementById('noteImagesWrapper');
+const addImageWrapper = document.getElementById('addImageWrapper');
+const addTagWrapper = document.getElementById('addTagWrapper');
+const addTagText = document.getElementById('addTagText');
+const insertedTagWrapper = document.getElementById('insertedTagWrapper');
+const fileTypes = 'JPEG, JPG, jpeg, jpg, BMP, bmp, PNG, png';
+let noteTagList = [];
+let browsedImageList = [];
 let currentNavBtn = 'home';
-let noteObject = {
-    id: '',
-    title: '',
-    content: '',
-    images: [],
-    tags: [],
-    createdDate: '',
-}
+let quireArray = [];
 
+let quireData = JSON.parse(localStorage.getItem('quire'));
+if(quireData != null){
+    quireArray = quireData;
+    quireArray.forEach(note => createNote(note));
+}
+// localStorage.clear()
 //Nav buttons
 
 nav.addEventListener('click', evt => {
@@ -26,13 +36,43 @@ nav.addEventListener('click', evt => {
         currentNavBtn = evt.target.title;
     }
 });
-
+console.log(quireArray);
 
 // Create notes
 createNoteBtn.onclick = function() {
-    if(createNoteBtn.textContent == 'Create Note')
-    createNote();
-    else{
+    let thisTitle;
+    let thisContent;
+    noteTitle.value? thisTitle = noteTitle.value : thisTitle = 'Note Title';
+    textDocument.innerHTML? thisContent = textDocument.innerHTML : thisContent = 'Note Content, consectetur Lorem ipsum dolor adipisicing elit.';
+    if(createNoteBtn.textContent == 'Create Note'){
+        let utc = new Date().toLocaleString();
+        let noteObject = {
+            noteId: Date.now(),
+            title: thisTitle,
+            content: thisContent,
+            images: browsedImageList,
+            tags: noteTagList,
+            createdDate: utc,
+            isFavorite: false
+        }
+        createNote(noteObject);
+        quireArray.push(noteObject);
+        localStorage.setItem('quire', JSON.stringify(quireArray));
+        setTimeout(() => {
+            resetImageAndTagWrappers();
+            updateModeF('', '', 'Create Note');
+        }, 100);
+        noteList.scrollTop = noteList.scrollHeight;
+    } else {
+        quireArray.find(note => {
+            if(note.noteId == document.getElementById(currentNote).idAddress){
+                note.title = thisTitle;
+                note.content = thisContent;
+                note.images = browsedImageList;
+                note.tags = noteTagList;
+            }
+            localStorage.setItem('quire', JSON.stringify(quireArray));
+        });
         document.getElementById(currentNote).noteTitle = noteTitle.value;
         document.getElementById(currentNote).noteContent = textDocument.innerHTML;
         document.getElementById(currentNote).querySelector('.noteTitle').textContent = noteTitle.value;
@@ -42,78 +82,92 @@ createNoteBtn.onclick = function() {
     }
 }
 
-const createNote = () => {
-    let id = Date.now() + Math.ceil(Math.random()*999);
+function createNote(obj) {
     const note1 = document.createElement('div');
     note1.className = 'note';
-    note1.id = id + 'Note';
+    note1.id = obj.noteId + 'Note';
     note1.isFavorite = false;
+    note1.idAddress = obj.noteId;
+    note1.noteTitle = obj.title;
+    note1.noteContent = obj.content;
+    note1.noteDate = obj.createdDate;
+    note1.imageList = obj.images;
+    note1.tagList = obj.tags;
     note1.style.left = '-550px';
-        const noteLeftPart = document.createElement('div');
-        noteLeftPart.className = 'noteLeftPart';
-            const deleteNote = document.createElement('div');
-            deleteNote.className = 'deleteNote';
-            deleteNote.id = id;
-                const trash = document.createElement('i');
-                trash.className = 'far fa-trash-alt';
-            deleteNote.appendChild(trash);
-            const div = document.createElement('div');
-                const h1 = document.createElement('h1');
-                h1.textContent = 30;
-                const p = document.createElement('p');
-                p.textContent = 'days old';
-            div.appendChild(h1);
-            div.appendChild(p);
-        noteLeftPart.appendChild(deleteNote);
-        noteLeftPart.appendChild(div);
-        const ttlCntntWrapper = document.createElement('div');
-        ttlCntntWrapper.className = 'ttlCntntWrapper';
-            const title = document.createElement('h3');
-            title.className = 'noteTitle';
-            noteTitle.value ? title.textContent = noteTitle.value : title.textContent = 'Note Title'
-            const content = document.createElement('p');
-            content.className = 'noteContent';
-            textDocument.innerHTML ? content.innerHTML = textDocument.innerHTML : content.innerHTML = 'Note Content, consectetur Lorem ipsum dolor adipisicing elit.'
-        ttlCntntWrapper.appendChild(title);
-        ttlCntntWrapper.appendChild(content);
-        const starWrapper = document.createElement('div');
-        starWrapper.className = 'starWrapper';
-        starWrapper.id = id + 'Star';
-            const star = document.createElement('i');
-            star.className = 'fas fa-star';
-        starWrapper.appendChild(star);
-    note1.noteTitle = title.textContent;
-    note1.noteContent = content.innerHTML;
-    note1.appendChild(noteLeftPart);
-    note1.appendChild(ttlCntntWrapper);
-    note1.appendChild(starWrapper);
-    noteList.appendChild(note1);
-    noteList.scrollTop = noteList.scrollHeight;
-    setTimeout(() => {
-        document.getElementById(id + 'Note').style.left = 0;
-    });
-    setTimeout(() => {
-        document.getElementById(id + 'Note').style.left = '-70px';
-    }, 250);
-    setNoteColors();
-}
-createNote();
-
-
-// Delete notes
-
-document.addEventListener('click', evt => {
-    if(evt.target.className == 'deleteNote'){
-        document.getElementById(evt.target.id).remove(); //Important, To avoid freezing note while cursor is over the delete button
-        document.getElementById(evt.target.id + 'Note').classList.add('noteRemoved');
+    const noteLeftPart = document.createElement('div');
+    noteLeftPart.className = 'noteLeftPart';
+    const deleteNote = document.createElement('div');
+    deleteNote.className = 'deleteNote';
+    deleteNote.onclick = () => {
+        quireArray = quireArray.filter(note => note.noteId != obj.noteId);
+        localStorage.setItem('quire', JSON.stringify(quireArray));
+        deleteNote.remove(); //Important, Remove the trash button to avoid freezing note while cursor is over the delete button
+        note1.classList.add('noteRemoved');
         setTimeout(() => {
-            document.getElementById(evt.target.id + 'Note').remove();
+            note1.remove();
             setTimeout(() => {
                 setNoteColors();
             }, 300);
         }, 590);
     }
-});
+    deleteNote.id = obj.noteId;
+    const trash = document.createElement('i');
+    trash.className = 'far fa-trash-alt';
+    deleteNote.appendChild(trash);
+    const div = document.createElement('div');
+    const h1 = document.createElement('h1');
+    h1.textContent = 30;
+    const p = document.createElement('p');
+    p.textContent = 'days old';
+    div.appendChild(h1);
+    div.appendChild(p);
+    noteLeftPart.appendChild(deleteNote);
+    noteLeftPart.appendChild(div);
+    const ttlCntntWrapper = document.createElement('div');
+    ttlCntntWrapper.className = 'ttlCntntWrapper';
+    const title = document.createElement('h3');
+    title.className = 'noteTitle';
+    obj.title ? title.textContent = obj.title : title.textContent = 'Note Title'
+    const content = document.createElement('p');
+    content.className = 'noteContent';
+    obj.content ? content.innerHTML = obj.content : content.innerHTML = 'Note Content, consectetur Lorem ipsum dolor adipisicing elit.'
+    ttlCntntWrapper.appendChild(title);
+    ttlCntntWrapper.appendChild(content);
+    const starWrapper = document.createElement('div');
+    starWrapper.className = 'starWrapper';
+    starWrapper.id = obj.noteId + 'Star';
+    const star = document.createElement('i');
+    star.className = 'fas fa-star';
+    if(obj.isFavorite == true){
+        star.classList.add('favorited');
+        note1.isFavorite = true;
+    }
+    starWrapper.onclick = () => {
+        if(note1.isFavorite != true)
+        star.classList.add('favorited');
+        else star.classList.remove('favorited');
+        note1.isFavorite = !note1.isFavorite;
+        if(currentNavBtn == 'favorite'){
+            showFavoriteNotes();
+            starWrapper.style.marginLeft = '5px'; //Important, To avoid freezing note while cursor is over the star button
+            setTimeout(() => {
+                starWrapper.style.marginLeft = 'unset';
+            });
+        }
+    }
+    starWrapper.appendChild(star);
+    note1.appendChild(noteLeftPart);
+    note1.appendChild(ttlCntntWrapper);
+    note1.appendChild(starWrapper);
+    noteList.appendChild(note1);
+    setTimeout(() => {
+        note1.style.left = 0;
+    });
+    setTimeout(() => {
+        note1.style.left = '-70px';
+    }, 250);
+    setNoteColors();
+}
 
 
 // Note border colors acording to their order
@@ -129,29 +183,6 @@ function setNoteColors() {
         if (counter >= colorList.length) counter = 0;
     }
 }
-
-
-// Star button clicked. Note favorite toggle
-
-document.addEventListener('click', evt => {
-    if(evt.target.className == 'starWrapper'){
-        let note = evt.target.id.slice(0, evt.target.id.length - 4) + 'Note';
-        let noteId = document.getElementById(note);
-        if(noteId.isFavorite != true){
-            document.getElementById(evt.target.id).querySelector('i').classList.add('favorited');
-        } else {
-            document.getElementById(evt.target.id).querySelector('i').classList.remove('favorited');
-        }
-        noteId.isFavorite = !noteId.isFavorite;
-        if(currentNavBtn == 'favorite'){
-            showFavoriteNotes();
-            evt.target.style.marginLeft = '5px'; //Important, To avoid freezing note while cursor is over the star button
-            setTimeout(() => {
-                evt.target.style.marginLeft = 'unset';
-            });
-        }
-    }
-});
 
 
 // Plipping through the sections
@@ -210,11 +241,6 @@ document.addEventListener('mouseup', evt => {
 
 // Home section
 
-const addImageWrapper = document.getElementById('addImageWrapper');
-const addTagWrapper = document.getElementById('addTagWrapper');
-const addTagText = document.getElementById('addTagText');
-const insertedTagWrapper = document.getElementById('insertedTagWrapper');
-
 
 document.onmousedown = evt => {
     if(evt.target.id == 'addImagesBtn' || evt.target.parentNode.id == 'addImageWrapper'
@@ -229,18 +255,16 @@ document.onmousedown = evt => {
     }
     else addTagWrapper.style.display = 'none';
 
-    if(evt.target.id == 'addTagBtn')
-    addTagF(addTagText.value);
+    if(evt.target.id == 'addTagBtn'){
+        addTagF(addTagText.value);
+    }
 }
 
 // Add tags
 
-let noteTagList = [];
-
-const addTagF = (tag) => {
+function addTagF(tag) {
     if(tag != '' && insertedTagWrapper.childElementCount < 5){
         insertedTagWrapper.style.display = 'flex';
-        noteTagList.push(tag);
         const tagP = document.createElement('button');
         tagP.innerHTML = tag + '<i class="fas fa-backspace"></i>';
         tagP.onclick = () => {
@@ -251,31 +275,33 @@ const addTagF = (tag) => {
                 insertedTagWrapper.style.display = 'none';
             }, 200);
             noteTagList = noteTagList.filter(tag => tag != tagP.innerHTML.split('<')[0]);
+            document.getElementById(currentNote).tagList = noteTagList;
         }
         tagP.classList.add('newAddedTag');
         setTimeout(() => {
             tagP.classList.remove('newAddedTag');
         });
-        insertedTagWrapper.appendChild(tagP);
+        let addPerm = true;
+        noteTagList.forEach(tags => {
+            if(tags == tag) addPerm = false;
+        });
+        if(addPerm == true){
+            noteTagList.push(tag);
+            insertedTagWrapper.appendChild(tagP);
+            document.getElementById(currentNote).tagList = noteTagList;
+        }
         addTagText.value = '';
         addTagText.focus();
     }
 }
 
 addTagText.addEventListener('keypress', e => {
-    if(e.key == 'Enter'){
-        addTagF(addTagText.value);
-    }
+    if(e.key == 'Enter')
+    addTagF(addTagText.value);
 });
 
-// Add image
 
-const imageFile = document.getElementById('imageFile');
-const addImageBtn = document.getElementById('addImageBtn');
-const addImageLinkText = document.getElementById('addImageLinkText');
-const noteImagesWrapper = document.getElementById('noteImagesWrapper');
-const fileTypes = 'JPEG, JPG, jpeg, jpg, BMP, bmp, PNG, png';
-let browsedImageList = [];
+// Add image
 
 addImageBtn.onclick = () => {
     if(addImageBtn.innerHTML != 'Add'){
@@ -285,6 +311,11 @@ addImageBtn.onclick = () => {
         addImageF(addImageLinkText.value); // Add image link
     }
 }
+
+addImageLinkText.addEventListener('keypress', e => {
+    if(e.key == 'Enter')
+    addImageF(addImageLinkText.value);
+});
 
 // Add image locally
 imageFile.onchange = (evt) => {
@@ -305,7 +336,7 @@ addImageLinkText.oninput = () => {
     }
 }
 
-const addImageF = (img) => {
+function addImageF(img) {
     browsedImageList.push(img);
     noteImagesWrapper.style.display = 'flex';
     const wrapper = document.createElement('div');
@@ -316,6 +347,7 @@ const addImageF = (img) => {
             if(noteImagesWrapper.childElementCount == 0)
             noteImagesWrapper.style.display = 'none';
             browsedImageList = browsedImageList.filter(image => image != img);
+            document.getElementById(currentNote).imageList = browsedImageList;
         }, 200);
     };
     wrapper.classList.add('newAddedImage');
@@ -330,6 +362,20 @@ const addImageF = (img) => {
     wrapper.appendChild(image);
     wrapper.appendChild(del);
     noteImagesWrapper.appendChild(wrapper);
+    addImageLinkText.value = '';
+    addImageBtn.innerHTML = `Browse <i class="fas fa-folder-open"></i>`;
+    document.getElementById(currentNote).imageList = browsedImageList;
+}
+
+function resetImageAndTagWrappers(){
+    noteTagList = [];
+    browsedImageList = [];
+    while(insertedTagWrapper.lastChild)
+    insertedTagWrapper.removeChild(insertedTagWrapper.lastChild);
+    while(noteImagesWrapper.lastChild)
+    noteImagesWrapper.removeChild(noteImagesWrapper.lastChild);
+    insertedTagWrapper.style.display = 'none';
+    noteImagesWrapper.style.display = 'none';
 }
 
 
@@ -396,10 +442,20 @@ noteList.addEventListener('click', evt => {
     else if(evt.target.className == 'note' && currentNavBtn == 'home'){
         textDocument.classList.add('updateMode');
         updateModeF(evt.target.noteTitle, evt.target.noteContent, 'Save Changes');
+        resetImageAndTagWrappers();
         currentNote = evt.target.id;
+        let noteTagListTemp = evt.target.tagList;
+        let browsedImageListTemp = evt.target.imageList;
+        noteTagListTemp.forEach(tag => {
+            addTagF(tag);
+        });
+        browsedImageListTemp.forEach(img => {
+            addImageF(img);
+        });
     } else {
         textDocument.classList.remove('updateMode');
         updateModeF('', '', 'Create Note');
+        resetImageAndTagWrappers();
     }
 });
 
