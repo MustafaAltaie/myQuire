@@ -37,7 +37,7 @@ button, .note, #tagWrapper > p, nav > p{
 }
 input[type='text']{
     padding: 15px;
-    border-radius: 25px;
+    border-radius: 5px;
     border: solid 1px var(--forColor);
 }
 button{
@@ -45,7 +45,7 @@ button{
     color: var(--backColor);
     min-width: 100px;
     padding: 15px;
-    border-radius: 25px;
+    border-radius: 5px;
     border: none;
 }
 button:hover, nav > p:hover{
@@ -247,10 +247,6 @@ section{
     transform: translateX(0%);
     opacity: 1;
 }
-.hiddenSection{
-    transform: translateX(100%);
-    opacity: 0;
-}
 
 /* Home */
 #home > div:first-child{
@@ -293,7 +289,6 @@ section{
     height: 100px;
     cursor: pointer;
     border: solid 1px #fff;
-    border-radius: 10px;
     overflow: hidden;
     transition: 0.2s;
 }
@@ -346,7 +341,7 @@ section{
 #insertedTagWrapper, #noteImagesWrapper{
     width: 100%;
     padding: 30px 15px;
-    border-radius: 15px;
+    border-radius: 5px;
     display: none;
     flex-wrap: wrap;
     gap: 10px;
@@ -383,7 +378,7 @@ section{
     height: 100%;
     padding: 50px;
     text-align: left;
-    border-radius: 25px;
+    border-radius: 5px;
 }
 #createNoteBtn{
     margin-top: 40px;
@@ -427,7 +422,7 @@ section{
     border: solid 5px var(--darkGrey);
     transform: rotate(45deg);
     cursor: move;
-    backdrop-filter: hue-rotate(90deg) brightness(110%);
+    backdrop-filter: hue-rotate(180deg) brightness(110%);
 }
 #magnifier::after{
     content: '';
@@ -465,26 +460,41 @@ section{
     width: 80%;
     margin: auto;
     border: solid 35px var(--lightGrey);
-    padding: 5px;
+    padding: 15px;
     box-shadow: 0 0 2px #000;
-    border-radius: 20px;
+    border-radius: 5px;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 20px;
     align-items: center;
     justify-content: center;
     overflow-y: scroll;
 }
 #tagWrapper > p{
+    position: relative;
     padding: 15px;
-    border-radius: 30px;
     background-color: var(--navColor);
     color: #fff;
     transition: 0.1s;
 }
+#tagWrapper > p::before{
+    position: absolute;
+    content: '';
+    width: 40px;
+    height: 10px;
+    background: #f2c600dc;
+    transform: rotate(-45deg);
+    top: 3px;
+    left: -12px;
+    transition: 0.1s;
+}
 #tagWrapper > p:hover{
     filter: brightness(130%);
-    transform: scale(1.1);
+    transform: translateY(2px) rotate(2deg);
+}
+#tagWrapper > p:hover::before{
+    transform: translate(-1px, -0.5px) rotate(-47deg);
+    filter: brightness(80%);
 }
 
 /* Favorite */
