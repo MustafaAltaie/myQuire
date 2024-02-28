@@ -143,6 +143,12 @@ function createNote(obj) {
         note1.isFavorite = true;
     }
     starWrapper.onclick = () => {
+        quireArray.find(note => {
+            if(note.noteId == note1.idAddress){
+                note.isFavorite = !note.isFavorite;
+                localStorage.setItem('quire', JSON.stringify(quireArray));
+            }
+        });
         if(note1.isFavorite != true)
         star.classList.add('favorited');
         else star.classList.remove('favorited');
@@ -337,7 +343,6 @@ addImageLinkText.oninput = () => {
 }
 
 function addImageF(img) {
-    browsedImageList.push(img);
     noteImagesWrapper.style.display = 'flex';
     const wrapper = document.createElement('div');
     wrapper.onclick = () => {
@@ -346,9 +351,9 @@ function addImageF(img) {
             wrapper.remove();
             if(noteImagesWrapper.childElementCount == 0)
             noteImagesWrapper.style.display = 'none';
-            browsedImageList = browsedImageList.filter(image => image != img);
-            document.getElementById(currentNote).imageList = browsedImageList;
         }, 200);
+        browsedImageList = browsedImageList.filter(image => image != img);
+        document.getElementById(currentNote).imageList = browsedImageList;
     };
     wrapper.classList.add('newAddedImage');
     setTimeout(() => {
@@ -361,7 +366,15 @@ function addImageF(img) {
     del.textContent = 'X';
     wrapper.appendChild(image);
     wrapper.appendChild(del);
-    noteImagesWrapper.appendChild(wrapper);
+    let addPerm = true;
+    browsedImageList.forEach(imgs => {
+        if(imgs == img) addPerm = false;
+    });
+    if(addPerm == true){
+        browsedImageList.push(img);
+        noteImagesWrapper.appendChild(wrapper);
+        document.getElementById(currentNote).imageList = browsedImageList;
+    }
     addImageLinkText.value = '';
     addImageBtn.innerHTML = `Browse <i class="fas fa-folder-open"></i>`;
     document.getElementById(currentNote).imageList = browsedImageList;
@@ -445,11 +458,11 @@ noteList.addEventListener('click', evt => {
         resetImageAndTagWrappers();
         currentNote = evt.target.id;
         let noteTagListTemp = evt.target.tagList;
-        let browsedImageListTemp = evt.target.imageList;
+        let imageListTemp = evt.target.imageList;
         noteTagListTemp.forEach(tag => {
             addTagF(tag);
         });
-        browsedImageListTemp.forEach(img => {
+        imageListTemp.forEach(img => {
             addImageF(img);
         });
     } else {
