@@ -79,6 +79,7 @@ createNoteBtn.onclick = function() {
         document.getElementById(currentNote).querySelector('.noteContent').innerHTML = textDocument.innerHTML;
         updateModeF('', '', 'Create Note');
         textDocument.classList.remove('updateMode');
+        document.getElementById(currentNote).classList.remove('updateingNote');
     }
 }
 
@@ -457,6 +458,9 @@ noteList.addEventListener('click', evt => {
         updateModeF(evt.target.noteTitle, evt.target.noteContent, 'Save Changes');
         resetImageAndTagWrappers();
         currentNote = evt.target.id;
+        for(let i = 0; i < notes.length; i++)
+        notes[i].classList.remove('updateingNote');
+        evt.target.classList.add('updateingNote');
         let noteTagListTemp = evt.target.tagList;
         let imageListTemp = evt.target.imageList;
         noteTagListTemp.forEach(tag => {
@@ -467,6 +471,7 @@ noteList.addEventListener('click', evt => {
         });
     } else {
         textDocument.classList.remove('updateMode');
+        document.getElementById(currentNote).classList.remove('updateingNote');
         updateModeF('', '', 'Create Note');
         resetImageAndTagWrappers();
     }

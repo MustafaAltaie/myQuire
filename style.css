@@ -127,6 +127,9 @@ main{
     pointer-events: none;
     transition: left 0.5s, height 0.1s linear 0.5s, min-height 0.1s linear 0.5s, margin 0.1s linear 0.5s;
 }
+.updateingNote{
+    left: 0 !important;
+}
 .note::before{
     z-index: -1;
     content: '';
