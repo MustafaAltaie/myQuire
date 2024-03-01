@@ -32,7 +32,7 @@ i, #noteTitleDemo, .ttlCntntWrapper, .noteLeftPart{
 .deleteNote{
     pointer-events: all;
 }
-button, .note, #tagWrapper > p, nav > p{
+button, .note, #tagWrapper > p, nav > p, #imageViewWrapper > div > div, #noteImagesWrapper > div{
     cursor: pointer;
 }
 input[type='text']{
@@ -290,7 +290,6 @@ section{
     position: relative;
     width: 100px;
     height: 100px;
-    cursor: pointer;
     border: solid 1px #fff;
     overflow: hidden;
     transition: 0.2s;
@@ -511,4 +510,119 @@ section{
 }
 #noteTitleDemo{
     width: 50%;
+}
+
+/* notesView */
+#notesView{
+    padding: 30px 80px 10px 0;
+}
+#tagsViewWrapper{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 0 0 20px 0;
+    border-bottom: solid 1px var(--forColor);
+}
+#tagsViewWrapper > p{
+    background: var(--navColor);
+    color: var(--backColor);
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+#mainViewWrapper{
+    height: 65%;
+    display: flex;
+}
+#imageViewWrapper{
+    position: relative;
+    height: 25%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+#slideShow{
+    position: relative;
+    width: 60%;
+    height: 100%;
+    overflow: hidden;
+}
+#slideShow > div{
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border: solid 5px var(--forColor);
+    border-radius: 4px;
+    box-shadow: 0 5px 5px #11111155;
+    transition: 0.2s;
+}
+#slideShow > div:hover{
+    transform: translateY(10px);
+}
+#slideShow > div:nth-child(1){
+    top: 70px;
+    left: 10px;
+}
+#slideShow > div:nth-child(2){
+    top: 260px;
+    left: 100px;
+}
+#slideShow > div:nth-child(3){
+    top: 70px;
+    left: 190px;
+}
+#slideShow > div:nth-child(4){
+    top: 260px;
+    left: 280px;
+}
+#slideShow > div:nth-child(5){
+    top: 70px;
+    left: 370px;
+}
+#slideShow > div > img{
+    border: solid 10px var(--lightGrey);
+}
+#slideShow > div::before, #slideShow > div::after{
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 350px;
+    background: var(--forColor);
+    transform: translate(-50%, -101%);
+}
+#mainNoteView{
+    width: 40%;
+    padding: 50px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+}
+#imageViewWrapper{
+    overflow-x: hidden;
+    border-top: solid 1px var(--forColor);
+}
+#imageViewWrapperSlide{
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    gap: 15px;
+    padding: 20px 0 0 0;
+}
+#imageViewWrapperSlide > div{
+    max-width: 200px;
+    min-width: 200px;
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+#imageViewWrapperSlide > div > img, #slideShow > div > img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
 }
