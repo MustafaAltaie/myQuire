@@ -16,9 +16,9 @@
 <body>
     <nav>
         <p title="home" onclick="showSection('home')" class="activeNavButton"><i class="fas fa-home"></i></p>
-        <p title="notesView" onclick="showSection('notesView')"><i class="fas fa-eye"></i></p>
+        <p title="notesView" onclick="showSection('notesView'); setTimeout(setHangingImagesStyle, 500);"><i class="fas fa-eye"></i></p>
         <p title="search" onclick="showSection('search'); searchText.value=''"><i class="fas fa-search"></i></p>
-        <p title="favorite" onclick="showSection('favorite')" id="favoriteNav"><i class="fas fa-star"></i></p>
+        <p title="favorite" onclick="showSection('notesView'); setTimeout(setHangingImagesStyle, 500);" id="favoriteNav"><i class="fas fa-star"></i></p>
         <p title="analysis"><i class="fas fa-chart-bar"></i></p>
         <p title="settings"><i class="fas fa-cog"></i></p>
     </nav>
@@ -88,46 +88,17 @@
                 <p>TV-Shows</p>
             </div>
         </section>
-        <!-- Favorite section -->
-        <section id="favorite">
-            <div class="noteTitleWrapper">
-                <input type="text" class="noteTitleDemo" id="noteTitleDemo">
-            </div>
-            <div class="noteContentWrapper">
-                <div class="contentDemo" id="contentDemo"></div>
-            </div>
-        </section>
         <section id="notesView">
-            <div id="tagsViewWrapper">
-                <p># tag1</p>
-                <p># tag2</p>
-                <p># tag3</p>
-                <p># tag4</p>
-                <p># tag5</p>
-            </div>
+            <div id="tagsViewWrapper"></div>
             <div id="mainViewWrapper">
-                <div id="slideShow">
-                    <div id="imageView1"><img id="imageViewImg1" src="https://cdn.pixabay.com/photo/2014/08/15/11/29/beach-418742_1280.jpg" alt=""></div>
-                    <div id="imageView2"><img id="imageViewImg2" src="https://cdn.pixabay.com/photo/2013/10/09/02/27/lake-192990_1280.jpg" alt=""></div>
-                    <div id="imageView3"><img id="imageViewImg3" src="https://cdn.pixabay.com/photo/2016/08/31/17/41/sunrise-1634197_1280.jpg" alt=""></div>
-                    <div id="imageView4"><img id="imageViewImg4" src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" alt=""></div>
-                    <div id="imageView5"><img id="imageViewImg5" src="https://cdn.pixabay.com/photo/2017/02/08/17/24/fantasy-2049567_1280.jpg" alt=""></div>
-                </div>
+                <div id="slideShow"></div>
                 <div id="mainNoteView">
-                    <h2>Note title</h2>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic praesentium doloremque minima, nam aspernatur ad consequuntur laudantium exercitationem perspiciatis vitae dolor nulla libero odit dolore quaerat iste aliquam enim dolores.</p>
+                    <h2 id="noteViewTitle">Note title</h2>
+                    <p id="noteViewContent">Lorem </p>
                 </div>
             </div>
             <div id="imageViewWrapper">
-                <div id="imageViewWrapperSlide">
-                    <div id="imageView1"><img id="imageViewImg1" src="https://cdn.pixabay.com/photo/2014/08/15/11/29/beach-418742_1280.jpg" alt=""></div>
-                    <div id="imageView2"><img id="imageViewImg2" src="https://cdn.pixabay.com/photo/2013/10/09/02/27/lake-192990_1280.jpg" alt=""></div>
-                    <div id="imageView3"><img id="imageViewImg3" src="https://cdn.pixabay.com/photo/2016/08/31/17/41/sunrise-1634197_1280.jpg" alt=""></div>
-                    <div id="imageView4"><img id="imageViewImg4" src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" alt=""></div>
-                    <div id="imageView5"><img id="imageViewImg5" src="https://cdn.pixabay.com/photo/2015/12/01/20/28/road-1072821_1280.jpg" alt=""></div>
-                    <div id="imageView6"><img id="imageViewImg6" src="https://cdn.pixabay.com/photo/2017/02/08/17/24/fantasy-2049567_1280.jpg" alt=""></div>
-                    <div id="imageView7"><img id="imageViewImg7" src="https://cdn.pixabay.com/photo/2013/10/02/23/03/mountains-190055_1280.jpg" alt=""></div>
-                </div>
+                <div id="imageViewWrapperSlide"></div>
             </div>
         </section>
     </main>
