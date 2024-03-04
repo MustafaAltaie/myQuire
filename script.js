@@ -15,17 +15,35 @@ const addTagWrapper = document.getElementById('addTagWrapper');
 const addTagText = document.getElementById('addTagText');
 const insertedTagWrapper = document.getElementById('insertedTagWrapper');
 const fileTypes = 'JPEG, JPG, jpeg, jpg, BMP, bmp, PNG, png';
+let slideShow = document.getElementById('slideShow');
+let imageViewWrapperSlide = document.getElementById('imageViewWrapperSlide');
 let noteTagList = [];
 let browsedImageList = [];
 let currentNavBtn = 'home';
 let quireArray = [];
 
 let quireData = JSON.parse(localStorage.getItem('quire'));
-if(quireData != null){
+console.log(quireData)
+if(quireData != null && quireData.length != 0){
     quireArray = quireData;
     quireArray.forEach(note => createNote(note));
+} else {
+    let imgs = [
+        'https://cdn.pixabay.com/photo/2014/08/15/11/29/beach-418742_1280.jpg',
+        'https://cdn.pixabay.com/photo/2013/10/09/02/27/lake-192990_1280.jpg',
+        'https://cdn.pixabay.com/photo/2016/08/31/17/41/sunrise-1634197_1280.jpg',
+        'https://cdn.pixabay.com/photo/2013/10/02/23/03/mountains-190055_1280.jpg',
+        'https://cdn.pixabay.com/photo/2017/02/08/17/24/fantasy-2049567_1280.jpg',
+        'https://cdn.pixabay.com/photo/2015/12/01/20/28/road-1072821_1280.jpg',
+        'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg'
+    ];
+    browsedImageList = imgs;
+    let tags = ['Nature', 'Images', 'Paintings', 'Mountains'];
+    noteTagList = tags;
+    createNoteFirst('Note Title', 'Note Content, consectetur Lorem ipsum dolor adipisicing elit.');
+    
 }
-// localStorage.clear()
+
 //Nav buttons
 
 nav.addEventListener('click', evt => {
@@ -36,7 +54,6 @@ nav.addEventListener('click', evt => {
         currentNavBtn = evt.target.title;
     }
 });
-console.log(quireArray);
 
 // Create notes
 createNoteBtn.onclick = function() {
@@ -45,19 +62,7 @@ createNoteBtn.onclick = function() {
     noteTitle.value? thisTitle = noteTitle.value : thisTitle = 'Note Title';
     textDocument.innerHTML? thisContent = textDocument.innerHTML : thisContent = 'Note Content, consectetur Lorem ipsum dolor adipisicing elit.';
     if(createNoteBtn.textContent == 'Create Note'){
-        let utc = new Date().toLocaleString();
-        let noteObject = {
-            noteId: Date.now(),
-            title: thisTitle,
-            content: thisContent,
-            images: browsedImageList,
-            tags: noteTagList,
-            createdDate: utc,
-            isFavorite: false
-        }
-        createNote(noteObject);
-        quireArray.push(noteObject);
-        localStorage.setItem('quire', JSON.stringify(quireArray));
+        createNoteFirst(thisTitle, thisContent);
         setTimeout(() => {
             resetImageAndTagWrappers();
             updateModeF('', '', 'Create Note');
@@ -77,10 +82,27 @@ createNoteBtn.onclick = function() {
         document.getElementById(currentNote).noteContent = textDocument.innerHTML;
         document.getElementById(currentNote).querySelector('.noteTitle').textContent = noteTitle.value;
         document.getElementById(currentNote).querySelector('.noteContent').innerHTML = textDocument.innerHTML;
+        document.getElementById(currentNote).classList.remove('updateingNote');
         updateModeF('', '', 'Create Note');
         textDocument.classList.remove('updateMode');
-        document.getElementById(currentNote).classList.remove('updateingNote');
     }
+}
+
+function createNoteFirst(title, content, images, tags){
+    let utc = new Date().toLocaleString();
+    let noteObject = {
+        noteId: Date.now(),
+        title: title,
+        content: content,
+        images: browsedImageList,
+        tags: noteTagList,
+        createdDate: utc,
+        isFavorite: false,
+        counter: 0
+    }
+    createNote(noteObject);
+    quireArray.push(noteObject);
+    localStorage.setItem('quire', JSON.stringify(quireArray));
 }
 
 function createNote(obj) {
@@ -206,6 +228,8 @@ function showSection (id) {
         document.getElementById(id).className = 'showenSection';
         currentSection = id;
     });
+    for(let i = 0; i < notes.length; i++)
+    notes[i].classList.remove('updateingNote');
 }
 showSection('home');
 
@@ -282,6 +306,7 @@ function addTagF(tag) {
                 insertedTagWrapper.style.display = 'none';
             }, 200);
             noteTagList = noteTagList.filter(tag => tag != tagP.innerHTML.split('<')[0]);
+            if(currentNote)
             document.getElementById(currentNote).tagList = noteTagList;
         }
         tagP.classList.add('newAddedTag');
@@ -295,6 +320,7 @@ function addTagF(tag) {
         if(addPerm == true){
             noteTagList.push(tag);
             insertedTagWrapper.appendChild(tagP);
+            if(currentNote)
             document.getElementById(currentNote).tagList = noteTagList;
         }
         addTagText.value = '';
@@ -374,10 +400,12 @@ function addImageF(img) {
     if(addPerm == true){
         browsedImageList.push(img);
         noteImagesWrapper.appendChild(wrapper);
+        if(currentNote)
         document.getElementById(currentNote).imageList = browsedImageList;
     }
     addImageLinkText.value = '';
     addImageBtn.innerHTML = `Browse <i class="fas fa-folder-open"></i>`;
+    if(currentNote)
     document.getElementById(currentNote).imageList = browsedImageList;
 }
 
@@ -446,12 +474,36 @@ function showAllNotes() {
 // Displaying notes
 const contentDemo = document.getElementById('contentDemo');
 const noteTitleDemo = document.getElementById('noteTitleDemo');
+const noteViewTitle = document.getElementById('noteViewTitle');
+const noteViewContent = document.getElementById('noteViewContent');
 let currentNote;
 
 noteList.addEventListener('click', evt => {
-    if(evt.target.className == 'note' && currentNavBtn == 'favorite'){
-        noteTitleDemo.value = evt.target.noteTitle;
-        contentDemo.innerHTML = evt.target.noteContent;
+    if(evt.target.className == 'note' && currentNavBtn == 'favorite'
+    || evt.target.className == 'note' && currentNavBtn == 'notesView'){
+        noteViewTitle.textContent = evt.target.noteTitle;
+        noteViewContent.textContent = evt.target.noteContent;
+        while(imageViewWrapperSlide.firstChild)
+        imageViewWrapperSlide.removeChild(imageViewWrapperSlide.firstChild);
+        const imgList = evt.target.imageList;
+        imgList.forEach(img => createViewImages(img));
+        while(slideShow.firstChild)
+        slideShow.removeChild(slideShow.firstChild);
+        hangingImagesLength();
+        hangingImagesSize = ((5 - hangingImageLength) + 5) * 24;
+        setHangingImages();
+        setHangingImagesStyle();
+        while(tagsViewWrapper.firstChild)
+        tagsViewWrapper.removeChild(tagsViewWrapper.firstChild);
+        const tagList = evt.target.tagList;
+        tagList.forEach(tag => createViewTags(tag));
+        imageViewWrapperSlide.style.left = '0px';
+        quireArray.find(note => {
+            if(note.noteId + 'Note' == evt.target.id){
+                note.counter ++;
+                localStorage.setItem('quire', JSON.stringify(quireArray));
+            }
+        });
     }
     else if(evt.target.className == 'note' && currentNavBtn == 'home'){
         textDocument.classList.add('updateMode');
@@ -471,6 +523,7 @@ noteList.addEventListener('click', evt => {
         });
     } else {
         textDocument.classList.remove('updateMode');
+        if(currentNote)
         document.getElementById(currentNote).classList.remove('updateingNote');
         updateModeF('', '', 'Create Note');
         resetImageAndTagWrappers();
@@ -481,4 +534,136 @@ function updateModeF(title, content, btnText){
     noteTitle.value = title;
     textDocument.innerHTML = content;
     createNoteBtn.textContent = btnText;
+    if(title == '')
+    currentNote = undefined;
+}
+
+
+// Notes view section
+
+// Drag the images slide bar
+let slideMovePermit = false;
+let notesView = document.getElementById('notesView');
+let notesViewLeftWidth;
+let slideInitX;
+
+document.addEventListener('mousedown', evt => {
+    if(evt.target.id == 'imageViewWrapperSlide'
+    || evt.target.parentNode.id == 'imageViewWrapperSlide'){
+        slideMovePermit = true;
+        slideInitX = evt.clientX - imageViewWrapperSlide.offsetLeft - imageViewWrapperSlide.offsetWidth/2;
+    }
+});
+
+document.addEventListener('mousemove', evt => {
+    if(slideMovePermit == true && imageViewWrapperSlide.offsetWidth > document.getElementById('imageViewWrapper').offsetWidth){
+        imageViewWrapperSlide.style.left = evt.clientX - imageViewWrapperSlide.offsetWidth/2 - slideInitX + 'px';
+        if(imageViewWrapperSlide.offsetLeft + imageViewWrapperSlide.offsetWidth < notesView.offsetWidth - 80 - 50){ // 80 for right padding value of the section
+            imageViewWrapperSlide.style.left = imageViewWrapperSlide.offsetLeft + imageViewWrapperSlide.offsetWidth - imageViewWrapperSlide.offsetWidth + 50 + 'px';
+            slideMovePermit = false;
+        }
+        else if(imageViewWrapperSlide.offsetLeft > 0)
+        imageViewWrapperSlide.style.left = '0px';
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    if(slideMovePermit == true)
+    slideMovePermit = false;
+});
+
+// Set the hanging images and tags
+const imageView = document.getElementsByClassName('imageView');
+if(notes.length != 0){
+    noteViewTitle.textContent = notes[0].noteTitle;
+    noteViewContent.textContent = notes[0].noteContent;
+    let imgList = notes[0].imageList;
+    imgList.forEach(img => createViewImages(img));
+    let tagList = notes[0].tagList;
+    tagList.forEach(tag => createViewTags(tag));
+}
+
+// Create hanging and slide images
+let hangingImage = document.getElementsByClassName('hangingImages');
+let hangingImageLength;
+function hangingImagesLength(){
+    if(imageView.length > 5)
+    hangingImageLength = 5;
+    else hangingImageLength = imageView.length;
+}
+hangingImagesLength();
+let leftCounter = 10;
+let hangingImagesSize = ((5 - hangingImageLength) + 5) * 24;  // ((maxLength - length) + maxLength) * 24  ,,, 5 and 24 is const
+
+function createViewImages(image){
+    const imageView = document.createElement('div');
+    imageView.className = 'imageView';
+        const image1 = document.createElement('img');
+        image1.src = image;
+        image1.alt = 'Image';
+    imageView.appendChild(image1);
+    imageViewWrapperSlide.appendChild(imageView);
+}
+
+// Create tags
+function createViewTags(tag){
+    const tag1 = document.createElement('p');
+    tag1.textContent = '# ' + tag;
+    document.getElementById('tagsViewWrapper').appendChild(tag1);
+}
+
+function setHangingImages(){
+    for(let i = 0; i < hangingImageLength; i++){
+        const hangingImages = document.createElement('div');
+        hangingImages.className = 'hangingImages';
+            const image = document.createElement('img');
+            image.src = imageView[i].children[0].src;
+            image.alt = 'Image';
+        hangingImages.appendChild(image);
+        slideShow.appendChild(hangingImages);
+        hangingImage[i].style.width = hangingImagesSize + 'px';
+        hangingImage[i].style.height = hangingImagesSize + 'px';
+    }
+}
+setHangingImages();
+
+function setHangingImagesStyle() {
+    if (hangingImageLength == 5 || hangingImageLength == 4){
+        for(let i = 0; i < hangingImageLength; i++){
+            if(i % 2 == 0)
+            hangingImage[i].style.top = '260px';
+            else
+            hangingImage[i].style.top = '70px';
+            hangingImage[i].style.left = leftCounter + 'px';
+            leftCounter += 90;
+            if(leftCounter > 90*hangingImageLength)
+            leftCounter = 10;
+        }
+    } else if (hangingImageLength == 3){
+        for(let i = 0; i < hangingImageLength; i++){
+            if(i % 2 == 0)
+            hangingImage[i].style.top = '250px';
+            else
+            hangingImage[i].style.top = '30px';
+            hangingImage[i].style.left = leftCounter + 'px';
+            leftCounter += 150;
+            if(leftCounter > 150*hangingImageLength)
+            leftCounter = 10;
+        }
+    } else if (hangingImageLength == 2){
+        for(let i = 0; i < hangingImageLength; i++){
+            if(i % 2 == 0)
+            hangingImage[i].style.top = '80px';
+            else
+            hangingImage[i].style.top = '140px';
+            hangingImage[i].style.left = leftCounter + 'px';
+            leftCounter += 270;
+            if(leftCounter > 270*hangingImageLength)
+            leftCounter = 10;
+        }
+    } else if (hangingImageLength == 1){
+        hangingImage[0].style.top = '50%';
+        hangingImage[0].style.left = '50%';
+        hangingImage[0].style.transform = 'translate(-50%, -50%)';
+    }
 }
