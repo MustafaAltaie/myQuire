@@ -599,3 +599,39 @@ section{
     object-fit: cover;
     pointer-events: none;
 }
+/* Analysis */
+#analysis1Wrapper{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 50px;
+}
+#circleWrapper{
+    position: relative;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: conic-gradient(#a33 0 30%, #3a3 30% 50%, #33a 50% 90%, #da0 90% 100%);
+}
+#circleInside{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: var(--lightGrey);
+}
+#noteAnalysisNamesWrapper{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+#noteAnalysisNamesWrapper > p{
+    padding: 20px;
+    color: #fff;
+    border-radius: 5px;
+}
