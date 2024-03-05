@@ -208,13 +208,14 @@ function setNoteColors() {
         noteList.children[i].querySelector('h1').style.color = colorList[counter];
         noteList.children[i].querySelector('h3').style.color = colorList[counter];
         noteList.children[i].querySelector('i').style.color = colorList[counter];
+        noteList.children[i].color = colorList[counter];
         counter ++;
         if (counter >= colorList.length) counter = 0;
     }
 }
 
 
-// Plipping through the sections
+// Flipping through the sections
 
 let currentSection;
 
@@ -230,9 +231,19 @@ function showSection (id) {
     });
     for(let i = 0; i < notes.length; i++)
     notes[i].classList.remove('updateingNote');
+    if(id == 'analysis' && localStorage.favoriteSection != 'true'){
+        localStorage.favoriteSection = true;
+        location.reload();
+    }
 }
 showSection('home');
 
+if(localStorage.favoriteSection == 'true'){
+    setTimeout(() => {
+        nav.getElementsByTagName('p')[4].click();
+        delete localStorage.favoriteSection;
+    }, 100);
+}
 
 // Move magnifier
 

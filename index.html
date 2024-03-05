@@ -19,7 +19,7 @@
         <p title="notesView" onclick="showSection('notesView'); setTimeout(setHangingImagesStyle, 500);"><i class="fas fa-eye"></i></p>
         <p title="search" onclick="showSection('search'); searchText.value=''"><i class="fas fa-search"></i></p>
         <p title="favorite" onclick="showSection('notesView'); setTimeout(setHangingImagesStyle, 500);" id="favoriteNav"><i class="fas fa-star"></i></p>
-        <p title="analysis"><i class="fas fa-chart-bar"></i></p>
+        <p title="analysis"  onclick="showSection('analysis')"><i class="fas fa-chart-bar"></i></p>
         <p title="settings"><i class="fas fa-cog"></i></p>
     </nav>
     <main>
@@ -101,8 +101,17 @@
                 <div id="imageViewWrapperSlide"></div>
             </div>
         </section>
+        <section id="analysis">
+            <div id="analysis1Wrapper">
+                <div id="circleWrapper">
+                    <div id="circleInside"></div>
+                </div>
+                <div id="noteAnalysisNamesWrapper"></div>
+            </div>
+        </section>
     </main>
 
-    <script src="script.js"></script>
+    <script src="scripts/script.js"></script>
+    <script src="scripts/analysis.js"></script>
 </body>
 </html>
